@@ -1,0 +1,23 @@
+{
+  "type": "default",
+  "components": [
+    {
+      "key": "repoName",
+      "label": "GitHub Repo Name",
+      "type": "textfield",
+      "description": "e.g. Make-Rest-Calls-From-Camunda-Example",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "key": "repoOwner",
+      "label": "Repo Owner Name",
+      "type": "textfield",
+      "validate": {
+        "required": true
+      },
+      "description": "e.g.  NPDeehan "
+    }
+  ]
+}
