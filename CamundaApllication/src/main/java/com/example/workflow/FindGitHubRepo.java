@@ -31,10 +31,10 @@ public class FindGitHubRepo implements JavaDelegate {
             //getStatusText
             String body = response.getBody();
             JSONObject obj = new JSONObject(body);
-            String issues = obj.getString("open_issues");
-            int open_issues = Integer.parseInt(issues);
+            String forks = obj.getString("forks");
+            int forksAsNumber = Integer.parseInt(forks);
 
-            execution.setVariable("openIssues", open_issues);
+            execution.setVariable("forks", forksAsNumber);
 
         }
     }
