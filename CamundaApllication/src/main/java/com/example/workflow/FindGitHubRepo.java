@@ -9,6 +9,8 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import javax.inject.Named;
+import java.util.HashMap;
+import java.util.Map;
 
 @Named
 public class FindGitHubRepo implements JavaDelegate {
@@ -26,7 +28,7 @@ public class FindGitHubRepo implements JavaDelegate {
 
 
         if(response.getStatus() != 200){
-            throw new BpmnError("NO_REPO_FOUND", "Error making call - Repose Code: "+response.getStatus());
+          throw new BpmnError("NO_REPO_FOUND", "Error making call - Repose Code: "+response.getStatus());
         }else{
             //getStatusText
             String body = response.getBody();
