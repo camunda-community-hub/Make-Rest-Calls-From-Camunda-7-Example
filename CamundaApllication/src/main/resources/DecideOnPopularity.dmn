@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="DecideOnPopularityDRD" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <decision id="DecideOnPopularity" name="Decide on Popularity">
+    <decisionTable id="DecisionTable_0gt1brx" hitPolicy="FIRST">
+      <input id="Input_1">
+        <inputExpression id="InputExpression_1" typeRef="integer">
+          <text>forks</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1ogjq17">
+        <inputExpression id="LiteralExpression_1i7u0en" typeRef="integer">
+          <text>contributors</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="popularRepo" typeRef="boolean" />
+      <rule id="DecisionRule_1sjpxyw">
+        <inputEntry id="UnaryTests_06r8yq4">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_189vl8u">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0uv0lmt">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ds5l45">
+        <inputEntry id="UnaryTests_1qbuiba">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1vct26c">
+          <text>&gt;= 10</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0vpjnrk">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_09wq0li">
+        <inputEntry id="UnaryTests_0tv3fbb">
+          <text>&gt;=10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lk372p">
+          <text>&gt;=5</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_15ebwgz">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0znpxk5">
+        <inputEntry id="UnaryTests_0kah765">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09kgk0d">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0nsb5cu">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="DecideOnPopularity">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

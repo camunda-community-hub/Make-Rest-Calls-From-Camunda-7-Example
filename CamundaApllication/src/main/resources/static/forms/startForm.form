@@ -5,7 +5,7 @@
       "key": "repoName",
       "label": "GitHub Repo Name",
       "type": "textfield",
-      "description": "e.g. Make-Rest-Calls-From-Camunda-Example",
+      "description": "e.g. camunda-bpm-platform",
       "validate": {
         "required": true
       }
@@ -17,7 +17,7 @@
       "validate": {
         "required": true
       },
-      "description": "e.g.  NPDeehan "
+      "description": "e.g.  camunda"
     }
   ]
 }
