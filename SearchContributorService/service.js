@@ -17,20 +17,33 @@ client.subscribe("searchContributors", async function({ task, taskService }) {
     const repoName = task.variables.get("repoName");
     const repoOwner = task.variables.get("repoOwner");
   
-const url = "https://api.github.com/repos/"+ repoName +"/" + repoName + "/contributors"
+const url = "https://api.github.com/repos/"+ repoOwner +"/" + repoName + "/contributors"
 console.log(url)
 
 try{
-    const contributors = await fetch(url).then(response => response.json());
-    var numberContributors = Object.keys(contributors).length;
+const contributors = await fetch(url)
+.then(function(response) {    
+    if (!response.ok) {
+       // throw new Error("HTTP status " + response.status); 
+       var e = new Error("HTTP status " + response.status); // e.name is 'Error'
+       e.name = 'RestError';
+       throw e;  
+    }
+    return response.json();
+})
 
-    const processVariables = new Variables();
-    processVariables.set("contributors", numberContributors);
-    console.log(numberContributors);
+var numberContributors = Object.keys(contributors).length;
 
-    await taskService.complete(task, processVariables);
+const processVariables = new Variables();
+processVariables.set("contributors", numberContributors);
+console.log(numberContributors);
 
-}catch (error){
-    await taskService.handleBpmnError(task, "BPMNError_Code", "statusCode");
+await taskService.complete(task, processVariables)
+
+
+}catch (e){
+    console.error(e.name +": "+ e.message)
+    await taskService.handleBpmnError(task, e.name, e.message);
 }
+
 });
