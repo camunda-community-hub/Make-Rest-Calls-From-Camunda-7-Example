@@ -36,14 +36,15 @@ var numberContributors = Object.keys(contributors).length;
 
 const processVariables = new Variables();
 processVariables.set("contributors", numberContributors);
-console.log(numberContributors);
+
 
 await taskService.complete(task, processVariables)
 
 
 }catch (e){
     console.error(e.name +": "+ e.message)
-    await taskService.handleBpmnError(task, e.name, e.message);
+    const processVariables = new Variables();
+    processVariables.set("errorMessage", e.message);
+    await taskService.handleBpmnError(task, e.name, e.message, processVariables);
 }
-
 });
