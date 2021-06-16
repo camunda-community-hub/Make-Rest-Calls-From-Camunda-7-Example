@@ -1,4 +1,3 @@
-const got = require('got');
 const fetch = require('node-fetch');
 const { Client, logger } = require("camunda-external-task-client-js");
 const { Variables } = require("camunda-external-task-client-js");
