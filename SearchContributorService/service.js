@@ -33,16 +33,16 @@ const contributors = await fetch(url)
 
 var numberContributors = Object.keys(contributors).length;
 
+//Throw BPMN error
 if(numberContributors <= 1){
     const processVariables = new Variables();
     processVariables.set("errorMessage", "Sorry the repo has just one or none contributor, look for another one");
     await taskService.handleBpmnError(task, "NO_CONTRIBUTORS", "The repo has no contributors", processVariables);
 }
 
+//Complete Task
 const processVariables = new Variables();
 processVariables.set("contributors", numberContributors);
-
-
 await taskService.complete(task, processVariables)
 
 // Handel Execption and create an incidence in Workflow Engine

@@ -10,10 +10,16 @@
     <bpmn:serviceTask id="Activity_0yo5adu" name="Search Github for Repo" camunda:delegateExpression="#{findGitHubRepo}">
       <bpmn:incoming>Flow_1kqscn4</bpmn:incoming>
       <bpmn:outgoing>Flow_1fwaiqf</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1cjpeid">
+        <bpmn:targetRef>DataObjectReference_11bo16b</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_0827gcj" name="Search for contributors" camunda:type="external" camunda:topic="searchContributors">
       <bpmn:incoming>Flow_01cw7w8</bpmn:incoming>
       <bpmn:outgoing>Flow_1kqscn4</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_11ehdl5">
+        <bpmn:targetRef>DataObjectReference_1o7apo7</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_0as6i8e" name="Get community profil" camunda:asyncBefore="true">
       <bpmn:extensionElements>
@@ -51,6 +57,9 @@ execution.setVariable("healthPercentage",health);
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0jaaxpt</bpmn:incoming>
       <bpmn:outgoing>Flow_0lzjxo2</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0wkjdv1">
+        <bpmn:targetRef>DataObjectReference_1tkdnxi</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
     <bpmn:subProcess id="Activity_1kavuhs" triggeredByEvent="true">
       <bpmn:startEvent id="Event_024h07w">
@@ -82,6 +91,15 @@ execution.setVariable("healthPercentage",health);
     <bpmn:businessRuleTask id="Activity_0i6kdpa" name="Decide on popularity" camunda:resultVariable="popularRepo" camunda:decisionRef="DecideOnPopularity" camunda:mapDecisionResult="singleEntry">
       <bpmn:incoming>Flow_1fwaiqf</bpmn:incoming>
       <bpmn:outgoing>Flow_155yowf</bpmn:outgoing>
+      <bpmn:property id="Property_0lhkk6c" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_0xltpxe">
+        <bpmn:sourceRef>DataObjectReference_1o7apo7</bpmn:sourceRef>
+        <bpmn:targetRef>Property_0lhkk6c</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+      <bpmn:dataInputAssociation id="DataInputAssociation_1syf9ct">
+        <bpmn:sourceRef>DataObjectReference_11bo16b</bpmn:sourceRef>
+        <bpmn:targetRef>Property_0lhkk6c</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
     </bpmn:businessRuleTask>
     <bpmn:userTask id="Activity_1vv3176" name="Display unpopular resutls" camunda:formKey="camunda-forms:/forms/unpopularRepoForm.form" camunda:assignee="#{processOwner}">
       <bpmn:incoming>Flow_1ewrqqs</bpmn:incoming>
@@ -100,6 +118,12 @@ execution.setVariable("healthPercentage",health);
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not popularRepo}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_00lgwg0" sourceRef="Activity_1vv3176" targetRef="Event_1uoi4s1" />
+    <bpmn:dataObjectReference id="DataObjectReference_1o7apo7" name="number of contributers" dataObjectRef="DataObject_0xe0zng" />
+    <bpmn:dataObject id="DataObject_0xe0zng" />
+    <bpmn:dataObjectReference id="DataObjectReference_11bo16b" name="number of forks" dataObjectRef="DataObject_01qyse4" />
+    <bpmn:dataObject id="DataObject_01qyse4" />
+    <bpmn:dataObjectReference id="DataObjectReference_1tkdnxi" name="health percentage" dataObjectRef="DataObject_0wnh2l0" />
+    <bpmn:dataObject id="DataObject_0wnh2l0" />
     <bpmn:textAnnotation id="TextAnnotation_1cz0l6i">
       <bpmn:text>Java Delegate</bpmn:text>
     </bpmn:textAnnotation>
@@ -116,15 +140,15 @@ execution.setVariable("healthPercentage",health);
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Git-Repo-Popularity-Checker">
       <bpmndi:BPMNEdge id="Flow_00lgwg0_di" bpmnElement="Flow_00lgwg0">
-        <di:waypoint x="1040" y="550" />
-        <di:waypoint x="1272" y="550" />
+        <di:waypoint x="1040" y="630" />
+        <di:waypoint x="1272" y="630" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ewrqqs_di" bpmnElement="Flow_1ewrqqs">
         <di:waypoint x="820" y="445" />
-        <di:waypoint x="820" y="550" />
-        <di:waypoint x="940" y="550" />
+        <di:waypoint x="820" y="630" />
+        <di:waypoint x="940" y="630" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="829" y="493" width="13" height="14" />
+          <dc:Bounds x="829" y="582" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_155yowf_di" bpmnElement="Flow_155yowf">
@@ -179,6 +203,33 @@ execution.setVariable("healthPercentage",health);
       <bpmndi:BPMNShape id="Activity_0as6i8e_di" bpmnElement="Activity_0as6i8e">
         <dc:Bounds x="940" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1tkdnxi_di" bpmnElement="DataObjectReference_1tkdnxi">
+        <dc:Bounds x="1032" y="495" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1006" y="552" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vv3176_di" bpmnElement="Activity_1vv3176">
+        <dc:Bounds x="940" y="590" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1uoi4s1_di" bpmnElement="Event_1uoi4s1">
+        <dc:Bounds x="1272" y="612" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1263" y="655" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_11bo16b_di" bpmnElement="DataObjectReference_11bo16b">
+        <dc:Bounds x="482" y="515" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="462" y="572" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1o7apo7_di" bpmnElement="DataObjectReference_1o7apo7">
+        <dc:Bounds x="322" y="585" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="311" y="642" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1kavuhs_di" bpmnElement="Activity_1kavuhs" isExpanded="true">
         <dc:Bounds x="250" y="83" width="310" height="170" />
       </bpmndi:BPMNShape>
@@ -205,20 +256,11 @@ execution.setVariable("healthPercentage",health);
           <dc:Bounds x="794" y="359" width="53" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1uoi4s1_di" bpmnElement="Event_1uoi4s1">
-        <dc:Bounds x="1272" y="532" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1263" y="575" width="58" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0scbww2_di" bpmnElement="Activity_0scbww2">
         <dc:Bounds x="1100" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0i6kdpa_di" bpmnElement="Activity_0i6kdpa">
         <dc:Bounds x="630" y="380" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1vv3176_di" bpmnElement="Activity_1vv3176">
-        <dc:Bounds x="940" y="510" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1cz0l6i_di" bpmnElement="TextAnnotation_1cz0l6i">
         <dc:Bounds x="450" y="303" width="120" height="30" />
@@ -240,6 +282,28 @@ execution.setVariable("healthPercentage",health);
       <bpmndi:BPMNEdge id="Association_0tiektn_di" bpmnElement="Association_0tiektn">
         <di:waypoint x="990" y="380" />
         <di:waypoint x="990" y="343" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_11ehdl5_di" bpmnElement="DataOutputAssociation_11ehdl5">
+        <di:waypoint x="340" y="460" />
+        <di:waypoint x="338" y="585" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_0xltpxe_di" bpmnElement="DataInputAssociation_0xltpxe">
+        <di:waypoint x="358" y="610" />
+        <di:waypoint x="710" y="610" />
+        <di:waypoint x="710" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1cjpeid_di" bpmnElement="DataOutputAssociation_1cjpeid">
+        <di:waypoint x="501" y="460" />
+        <di:waypoint x="502" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_1syf9ct_di" bpmnElement="DataInputAssociation_1syf9ct">
+        <di:waypoint x="518" y="540" />
+        <di:waypoint x="680" y="540" />
+        <di:waypoint x="680" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0wkjdv1_di" bpmnElement="DataOutputAssociation_0wkjdv1">
+        <di:waypoint x="1013" y="460" />
+        <di:waypoint x="1034" y="495" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
