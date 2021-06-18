@@ -23,21 +23,37 @@ public class FindGitHubRepo implements JavaDelegate {
 
 
         Unirest.setTimeouts(0, 0);
-        HttpResponse<String> response = Unirest.get("https://api.github.com/repos/" + repoOwner +  "/" + repoName)
+        HttpResponse<String> response = Unirest.get("https://api.github.com/repos/" + repoOwner + "/" + repoName)
                 .asString();
 
 
-        if(response.getStatus() != 200){
-          throw new BpmnError("NO_REPO_FOUND", "Error making call - Repose Code: "+response.getStatus());
-        }else{
+        if (response.getStatus() != 200) {
+
+            // create incidence if Status code is not 200
+            throw new Exception("Error from REST call, Response code: " + response.getStatus());
+
+        } else {
+
             //getStatusText
             String body = response.getBody();
             JSONObject obj = new JSONObject(body);
-            String forks = obj.getString("forks");
-            int forksAsNumber = Integer.parseInt(forks);
+            //parse for downloads
+            Boolean downloads = obj.getBoolean("has_downloads");
 
-            execution.setVariable("forks", forksAsNumber);
+            if (!downloads) {
 
+                // Throw BPMN error
+                throw new BpmnError("NO_DOWNLOAD_OPTION", "Repo can't be downloaded");
+
+            } else {
+
+                //parse for forks
+                String forks = obj.getString("forks");
+                int forksAsNumber = Integer.parseInt(forks);
+                //Set variables to the process
+                execution.setVariable("forks", forksAsNumber);
+
+            }
         }
     }
 }

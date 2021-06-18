@@ -1,0 +1,35 @@
+{
+  "type": "default",
+  "components": [
+    {
+      "key": "repoName",
+      "label": "Github Repo Name",
+      "type": "textfield",
+      "description": "This is the repo that we checked"
+    },
+    {
+      "key": "repoOwner",
+      "label": "Repo Owner Name",
+      "type": "textfield",
+      "description": "This the use that owns the repo"
+    },
+    {
+      "key": "forks",
+      "label": "Forks",
+      "type": "textfield",
+      "description": "Number of times this repo has been forked"
+    },
+    {
+      "key": "contributors",
+      "label": "Contributers",
+      "type": "textfield",
+      "description": "Number of contributers to this repo"
+    },
+    {
+      "key": "healthPercentage",
+      "label": "Health Percentage",
+      "type": "textfield",
+      "description": "Number of health in percentage"
+    }
+  ]
+}
