@@ -48,8 +48,10 @@ throw new Error("Error from REST, response Code: " + statusCode)
           <camunda:script scriptFormat="JavaScript">health = execution.getVariable("healthPercentage");
 
 if(health &lt; 70){
+
 execution.setVariable("healthPercentage", health);
 throw new org.camunda.bpm.engine.delegate.BpmnError("error-not-healthy");
+
 }else{
 execution.setVariable("healthPercentage",health);
 }</camunda:script>

@@ -1,7 +1,7 @@
 
 # Make REST calls from Camunda Example
 
-This project shows the various ways that exist to make REST calls from Camunda. 
+This project shows the various ways that exist to make REST calls from Camunda.
 
  The project covers the implementation of:
 
@@ -10,20 +10,20 @@ This project shows the various ways that exist to make REST calls from Camunda.
 * [Connectors](https://docs.camunda.org/manual/latest/user-guide/process-engine/connectors/)
 
 Within a process all of the implementations can be used to implement a BPMN [Service Task](https://docs.camunda.org/manual/latest/reference/bpmn20/tasks/service-task/). The best practise guide provides a good [overview of the different options for the implementation of service taks](https://camunda.com/best-practices/invoking-services-from-the-process/).
- Addionally [Task Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) and [Execution Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) can implement Java Delegates. 
+ Additionally [Task Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) and [Execution Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) can implement Java Delegates.
 
 This project uses 3 Service tasks to outline the different implementations. The following image outlines the process:
 
 ![Process](/img/process.png)
 
-:exclamation: Important: 
+:exclamation: Important:
 If a REST call returns not a 200 status Code, this does not automatically lead to an error within the process. Instead this can be implemented and handled depending on the requirements for each project. For more information read the explanation section.
  
 
 ## Run the project
-The project contains a Camunda Spring Boot application and a [JavaScript External Task Worker](https://github.com/camunda/camunda-external-task-client-js). Download the project and open the Camunda Spring Boot application in your IDE. Make sure you use a Java 11. Start the application.
+The project contains a Camunda Spring Boot application and a [JavaScript External Task Worker](https://github.com/camunda/camunda-external-task-client-js). Download the project and open the Camunda Spring Boot application in your IDE. Make sure you use Java 11. Start the application.
 
-Start a process instance of the process in Tasklist, by using the predefined start form or start the instance via REST. If you [start the instance via REST](https://docs.camunda.org/manual/latest/reference/rest/process-definition/post-start-process-instance/) make sure the needed variables are included. 
+Start a process instance of the process in Tasklist, by using the predefined start form or start the instance via REST. If you [start the instance via REST](https://docs.camunda.org/manual/latest/reference/rest/process-definition/post-start-process-instance/) make sure the needed variables are included.
 Example for the Request body:
 ```
 {
@@ -57,7 +57,7 @@ node service.js
 
 
 ## Explanation of the implementations
-This section provides more information on the single implementations. It shows how the response code and the information from the response body can be used differently. In this project a response code that is not 200 will create an incident. The information of the response body is either used to complete the task or to throw a BPMN error. 
+This section provides more information on the single implementations. It shows how the response code and the information from the response body can be used differently. In this project a response code that is not 200 will create an incident. The information of the response body is either used to complete the task or to throw a BPMN error.
 
 
 In general there are the following options for Service Tasks:
@@ -66,12 +66,12 @@ In general there are the following options for Service Tasks:
 * create an [incident](https://docs.camunda.org/manual/latest/user-guide/process-engine/incidents/) (information from the REST call lead to a fail and create an incident in the workflow engine, which require an administrator to solve)
 
 ### Java Delegate
-A Java Delegate is called during the execution and needs to implement the JavaDelegate interface. In this setup the Java Class is deployed to the Camunda Engine. 
+A Java Delegate is called during the execution and needs to implement the JavaDelegate interface. In this setup the Java Class is deployed to the Camunda Engine.
 
-:file_folder: Note: 
-The explaination divides the code in different pieces to outline the different concepts. The full class can be found within the project (Make-Rest-Calls-From-Camunda-Example/CamundaApllication/src/main/java/com/example/workflow/FindGitHubRepo.java)
+:file_folder: Note:
+The explanation divides the code in different pieces to outline the different concepts. The full class can be found within the project (Make-Rest-Calls-From-Camunda-Example/CamundaApllication/src/main/java/com/example/workflow/FindGitHubRepo.java)
 
-The first part of the class gets the process variables "repoOwner" and "repoName". Those are used to perform the REST call within the Java Code: 
+The first part of the class gets the process variables "repoOwner" and "repoName". Those are used to perform the REST call within the Java Code:
 ```java
 @Named
 public class FindGitHubRepo implements JavaDelegate {
@@ -90,7 +90,7 @@ public class FindGitHubRepo implements JavaDelegate {
 
 ```
 #### create an incident
-The code example then checks the status code. If the response code is not a 200 an execption will be thrown. Within the code this execption is not handeled. Hence this will lead to an incident within the Camunda Platform Engine
+The code example then checks the status code. If the response code is not a 200 an exception will be thrown. Within the code this exception is not handled. Hence this will lead to an incident within the Camunda Platform Engine
 
 ```java
  if (response.getStatus() != 200) {
@@ -99,13 +99,13 @@ The code example then checks the status code. If the response code is not a 200 
             throw new Exception("Error from REST call, Response code: " + response.getStatus());
 
 ```
-:anger: Make sure that you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending where your last transaction in the process is, the state of the process will roll back to the last transaction, which might not be the service task, where the Error occures. You can set transactions manually by using the async before and after flag in the modeler. 
+:anger: Make sure that you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending where your last transaction in the process is, the state of the process will roll back to the last transaction, which might not be the service task, where the Error occurred. You can set transactions manually by using the async before and after flag in the modeler.
 
 ![Process](/img/async.png)
 
 
 #### throw a BPMN error
-If the response code is 200. The example code gets the response body and parse for the entry of "downloads". If the value of downloads is false the code throws a BPMN error. This error can be then handeled by the logic of the process:
+If the response code is 200. The example code gets the response body and parse for the entry of "downloads' '. If the value of downloads is false the code throws a BPMN error. This error can be then handled by the logic of the process:
 
 ```java
  } else {
@@ -126,7 +126,7 @@ If the response code is 200. The example code gets the response body and parse f
 
 #### complete the task
 
-If the two checks before have not triggered the execption or the bpmn error the example code parse the response body for the number of forks. It sets the variable to the process and the task completes.
+If the two checks before have not triggered the exception or the bpmn error the example code parses the response body for the number of forks. It sets the variable to the process and the task completes.
 
 ```java
 } else {
@@ -141,20 +141,20 @@ If the two checks before have not triggered the execption or the bpmn error the 
 ```
 
 ### External Task
-An external task is written into a list. From there an external task worker can fetch and lock it using Camunda's REST API. Hence the external task workers are deployed independly. They are language independ. There is a [list with available clients in different languages](https://github.com/camunda/awesome-camunda-external-clients). This project uses the JavaScript external task client.
+An external task is written into a list. From there an external task worker can fetch and lock it using Camunda's REST API. Hence the external task workers are deployed independently. They are language independent. There is a [list with available clients in different languages](https://github.com/camunda/awesome-camunda-external-clients). This project uses the JavaScript external task client.
 
-:file_folder: 
-Note: The explaination divides the code in different pieces to outline the different concepts. The full code example can be found within the project (Make-Rest-Calls-From-Camunda-Example/SearchContributorService/service.js)
+:file_folder:
+Note: The explanation divides the code in different pieces to outline the different concepts. The full code example can be found within the project (Make-Rest-Calls-From-Camunda-Example/SearchContributorService/service.js)
 
 
-With the usage of the External Task client it is possible to get variables of the process. Those are then used to make a REST call in Java Script code:
+With the usage of the External Task client it is possible to get variables of the process. Those are then used to make a REST call in Javascript code:
 
 ```javascript
 client.subscribe("searchContributors", async function({ task, taskService }) {
 
     const repoName = task.variables.get("repoName");
     const repoOwner = task.variables.get("repoOwner");
-  
+ 
 const url = "https://api.github.com/repos/"+ repoOwner +"/" + repoName + "/contributors"
 console.log(url)
 
@@ -163,23 +163,23 @@ const contributors = await fetch(url)
 ```
 
 #### create an incident
-Again we check in the JavaScript Code for the response code. If the code does not equal 200 we throw an error. Later in our JavaScript code we handel the error and use the External Task client to send back a failure to the workflow engine. This failure will then create an incident.
+Again we check in the JavaScript Code for the response code. If the code does not equal 200 we throw an error. Later in our JavaScript code we handle the error and use the External Task client to send back a failure to the workflow engine. This failure will then create an incident.
 If the response code equals 200 the response body is returned
 
 ```javascript
 .then(function(response) {    
     if (!response.ok) {
-       // throw Execption; 
+       // throw Exception;
        var e = new Error("HTTP status " + response.status); // e.name is 'Error'
        e.name = 'RestError';
-       throw e; 
+       throw e;
     }
     return response.json();
 })
 
 ...
 
-// Handel Execption and create an incidence in Workflow Engine
+// Handle Exception and create an incidence in Workflow Engine
 }catch (e){
     await taskService.handleFailure(task, {
         errorMessage: e.name,
@@ -194,7 +194,7 @@ If the response code equals 200 the response body is returned
 
 
 #### throw a BPMN error
-Then the information of the response body is used. The example uses the information of the number of contributors. If the number is smaller or equals one the external task worker sends back a BPMN Error: 
+Then the information of the response body is used. The example uses the information of the number of contributors. If the number is smaller or equals one the external task worker sends back a BPMN Error:
 
 ```javascript
 var numberContributors = Object.keys(contributors).length;
@@ -208,7 +208,7 @@ if(numberContributors <= 1){
 ```
 
 #### complete the task
-If there is more than one contributor. The External Task worker uses the client method to compelte the task and send back variables to the process:
+If there is more than one contributor. The External Task worker uses the client method to complete the task and send back variables to the process:
 
 ```javascript
 //Complete Task
@@ -219,14 +219,14 @@ await taskService.complete(task, processVariables)
 
 
 ### Connectors
-The two previous examples implemented the REST call within their code. The benefit is that everthing is together in one place and one can easily handle the different outcomes. 
+The two previous examples implemented the REST call within their code. The benefit is that everything is together in one place and one can easily handle the different outcomes.
 
-Connectors within Camunda provide an API for simple HTTP and SOAP connections. There is no need to implement the REST call with code. However handeling the different outcomes is more complicated and requieres the usage of Script. 
+Connectors within Camunda provide an API for simple HTTP and SOAP connections. There is no need to implement the REST call with code. However handling the different outcomes is more complicated and requires the usage of Script.
 
-:anger: Note: 
-Be aware of the other two options. Depending how complicate the REST call and the proceecing of the response get, the other options above might be more suitable. 
+:anger: Note:
+Be aware of the other two options. Depending how complicated the REST call and the proceeding of the response get, the other options above might be more suitable.
 
-In order to use connectors and the http client the connect dependency and the http client have to be added to the POM file: 
+In order to use connectors and the http client the connect dependency and the http client have to be added to the POM file:
 ```
     <dependency>
       <groupId>org.camunda.bpm</groupId>
@@ -251,17 +251,17 @@ In order to parse the response body it can be helpful to include the [Spin Plugi
       <artifactId>camunda-spin-dataformat-json-jackson</artifactId>
     </dependency>
 ```
-This [project](https://github.com/rob2universe/camunda-http-connector-example) shows a simple usecase for connectors too. 
+This [project](https://github.com/rob2universe/camunda-http-connector-example) shows a simple use case for connectors too.
 
-To configure the Connector the Input Parameters must be set. To configure a GET call, the method, the url and the headers must be set: 
+To configure the Connector the Input Parameters must be set. To configure a GET call, the method, the url and the headers must be set:
 ![Output](/img/input.png)
 
 
-The configuration of the Connector allows to set output variables. 
+The configuration of the Connector allows setting output variables.
 ![Output](/img/output.png)
 
 
-The response Code can be accessed easliy with the Expression: 
+The response Code can be accessed easily with the Expression:
 ```
 ${statusCode}
 ```
@@ -272,9 +272,9 @@ ${S(response).prop("health_percentage")}
 
 
 #### create an incident
-Within the example an incident should be created if we the response code is not a 200. 
+Within the example an incident should be created if the response code is not a 200.
 
-:anger: Make sure that you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending where your last transaction in the process is, the state of the process will roll back to the last transaction, which might not be the service task, where the Error occures. You can set transactions manually by using the async before and after flag in the modeler. 
+:anger: Make sure that you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending where your last transaction in the process is, the state of the process will roll back to the last transaction, which might not be the service task, where the Error occurred. You can set transactions manually by using the async before and after flag in the modeler.
 
 ![Async](/img/async.png)
 
@@ -285,10 +285,10 @@ The response Code is defined as an output variable. In order to check the value 
 ![ExecutionListenerForResponseCode](/img/ExecutionListener1.png)
 
 
-If the response code does not equal 200 the Script throws an error. As the error is not handeled this leads to an incident within the workflow engine. 
+If the response code does not equal 200 the Script throws an error. As the error is not handled this leads to an incident within the workflow engine.
 
-:bangbang: 
-In this project the incident will be created before. If the response is not 200 the response body looks different. Hence the Expression that we use to store the healthpercentage ```${S(response).prop("health_percentage")}``` fails. The accompined incident message won't give details about the failed REST call. Rather it contains the information that the evaluation of the expression has failed. This outlines one of the challenges working with Connectors. If the evaluation of the response code and the different variables is handeled within the same code, it is easier to maintain the outcome and the logic.
+:bangbang:
+In this project the incident will be created before. If the response is not 200 the response body looks different. Hence the Expression that we use to store the health percentage ```${S(response).prop("health_percentage")}``` fails. The accompined incident message won't give details about the failed REST call. Rather it contains the information that the evaluation of the expression has failed. This outlines one of the challenges working with Connectors. If the evaluation of the response code and the different variables is handled within the same code, it is easier to maintain the outcome and the logic.
 
 
 #### throw a BPMN error
@@ -307,5 +307,7 @@ execution.setVariable("healthPercentage",health);
 ```
 #### complete the task
 
-With a Connector the task completes after calling the REST endpoint. 
+With a Connector the task completes after calling the REST endpoint.
+
+
 
