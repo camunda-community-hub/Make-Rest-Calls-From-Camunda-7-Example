@@ -23,15 +23,21 @@ try{
 const contributors = await fetch(url)
 .then(function(response) {    
     if (!response.ok) {
-       // throw new Error("HTTP status " + response.status); 
+       // throw Execption; 
        var e = new Error("HTTP status " + response.status); // e.name is 'Error'
        e.name = 'RestError';
-       throw e;  
+       throw e; 
     }
     return response.json();
 })
 
 var numberContributors = Object.keys(contributors).length;
+
+if(numberContributors <= 1){
+    const processVariables = new Variables();
+    processVariables.set("errorMessage", "Sorry the repo has just one or none contributor, look for another one");
+    await taskService.handleBpmnError(task, "NO_CONTRIBUTORS", "The repo has no contributors", processVariables);
+}
 
 const processVariables = new Variables();
 processVariables.set("contributors", numberContributors);
@@ -39,11 +45,23 @@ processVariables.set("contributors", numberContributors);
 
 await taskService.complete(task, processVariables)
 
-
+// Handel Execption and create an incidence in Workflow Engine
 }catch (e){
-    console.error(e.name +": "+ e.message)
-    const processVariables = new Variables();
-    processVariables.set("errorMessage", e.message);
-    await taskService.handleBpmnError(task, e.name, e.message, processVariables);
+    await taskService.handleFailure(task, {
+        errorMessage: e.name,
+        errorDetails: e.message,
+        retries: 0,
+        retryTimeout: 1000
+      });
+
 }
 });
+
+
+
+
+
+   /* console.error(e.name +": "+ e.message)
+    const processVariables = new Variables();
+    processVariables.set("errorMessage", e.message);
+    await taskService.handleBpmnError(task, e.name, e.message, processVariables);*/

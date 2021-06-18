@@ -30,12 +30,6 @@
       "label": "Health Percentage",
       "type": "textfield",
       "description": "Number of health in percentage"
-    },
-    {
-      "key": "statusCode",
-      "label": "Status",
-      "type": "textfield",
-      "description": "Status Code from REST Call"
     }
   ]
 }
