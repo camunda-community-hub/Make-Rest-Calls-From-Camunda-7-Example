@@ -28,7 +28,7 @@ The project contains a Camunda Spring Boot application and a [JavaScript Externa
 
 Start a process instance of the process in Tasklist, by using the predefined start form or start the instance via REST. If you [start the instance via REST](https://docs.camunda.org/manual/latest/reference/rest/process-definition/post-start-process-instance/) make sure the needed variables are included.
 Example for the Request body:
-```
+```Json
 {
   "variables": {
     "repoName" : {
@@ -231,7 +231,7 @@ Connectors within Camunda provide an API for simple HTTP and SOAP connections. T
 Be aware of the other two options. Depending how complicated the REST call and the proceeding of the response get, the other options above might be more suitable.
 
 In order to use connectors and the http client the connect dependency and the http client have to be added to the POM file:
-```
+```xml
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine-plugin-connect</artifactId>
@@ -244,7 +244,7 @@ In order to use connectors and the http client the connect dependency and the ht
 ```
 In order to parse the response body it can be helpful to include the [Spin Plugin](https://docs.camunda.org/manual/latest/reference/spin/) as well. To add Spin and Json the dependencies are added to the pom file.
 
-```
+```xml
   <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine-plugin-spin</artifactId>
