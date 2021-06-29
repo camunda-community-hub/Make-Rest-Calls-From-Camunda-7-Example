@@ -7,7 +7,7 @@ This document outlines an example project, and three common ways to make REST ca
 * [Java Delegates](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/)
   * Where the call is made within a local Java Class, called by the engine.
 * [External Task](https://docs.camunda.org/manual/latest/user-guide/process-engine/external-tasks/)
-  * Where the call is made by an external service, running independently from the engine.
+  * Where the call is made by an external piece of software, running independently from the engine.
 * [Connectors](https://docs.camunda.org/manual/latest/user-guide/process-engine/connectors/)
   * Where the call is made by the engine, using properties added directly to the XML of the process model. 
 
@@ -20,7 +20,7 @@ This project uses three Service Tasks to outline the different implementation me
 ![Process](./img/process.png)
 
 :exclamation: Important:
-If a REST call returns a `2xx` status code, this indicates a successful call. However, it should not be assumed other codes such as `5xx` or `4xx` will automatically lead to an error within the process. Instead, this can be implemented and handled depending on the requirements for each project. For more information, read the [explanation of the implementations](## Explanation of the implementations) section below.
+If a REST call returns a `2xx` status code, this indicates a successful call. However, it should not be assumed other codes such as `5xx` or `4xx` will automatically lead to an error within the process. Instead, this can be implemented and handled depending on the requirements for each project. For more information, read the [explanation of the implementations](#explanation-of-the-implementations) section below.
 
 ## Run the project
 
