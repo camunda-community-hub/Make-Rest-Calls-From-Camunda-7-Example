@@ -95,9 +95,26 @@ public class FindGitHubRepo implements JavaDelegate {
         String repoName = (String) execution.getVariable("repoName");
 
 
-        Unirest.setTimeouts(0, 0);
-        HttpResponse<String> response = Unirest.get("https://api.github.com/repos/" + repoOwner + "/" + repoName)
-                .asString();
+        HttpResponse<String> response = get("https://api.github.com/repos/" + repoOwner + "/" + repoName);
+
+```
+
+The `get` method being called in the above snippet simply implements the rest call using the Java9 HTTP client
+
+```Java
+    public HttpResponse<String> get(String uri) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .build();
+
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println(response.body());
+
+        return response;
+    }
 
 ```
 
@@ -106,11 +123,12 @@ public class FindGitHubRepo implements JavaDelegate {
 The code example then checks the status code. If the response code is not `200`, an exception will be thrown. Within the code, this exception is not handled. Therefore, this will lead to an incident within the Camunda Platform Engine.
 
 ```java
- if (response.getStatus() != 200) {
+ if (response.statusCode() != 200) {
 
             // create incidence if Status code is not 200
-            throw new Exception("Error from REST call, Response code: " + response.getStatus());
- }
+            throw new Exception("Error from REST call, Response code: " + response.statusCode());
+
+        } 
 
 ```
 
@@ -126,7 +144,7 @@ If the response code is `200`, the example code receives the response body and p
  } else {
 
             //getStatusText
-            String body = response.getBody();
+            String body = response.body();
             JSONObject obj = new JSONObject(body);
             //parse for downloads
             Boolean downloads = obj.getBoolean("has_downloads");
@@ -136,6 +154,8 @@ If the response code is `200`, the example code receives the response body and p
                 // Throw BPMN error
                 throw new BpmnError("NO_DOWNLOAD_OPTION", "Repo can't be downloaded");
 
+            }
+
 ```
 
 #### Complete the task
@@ -144,8 +164,7 @@ If the two prior checks do not trigger the exception or the BPMN error, the exam
 
 ```java
 } else {
-
-                //parse for forks
+  //parse for forks
                 String forks = obj.getString("forks");
                 int forksAsNumber = Integer.parseInt(forks);
                 //Set variables to the process
