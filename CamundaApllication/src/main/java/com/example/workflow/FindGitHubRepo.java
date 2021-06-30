@@ -1,7 +1,6 @@
 package com.example.workflow;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
+
 import  org.json.*;
 
 import org.camunda.bpm.engine.delegate.BpmnError;
@@ -9,8 +8,10 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import javax.inject.Named;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Named
 public class FindGitHubRepo implements JavaDelegate {
@@ -22,20 +23,18 @@ public class FindGitHubRepo implements JavaDelegate {
         String repoName = (String) execution.getVariable("repoName");
 
 
-        Unirest.setTimeouts(0, 0);
-        HttpResponse<String> response = Unirest.get("https://api.github.com/repos/" + repoOwner + "/" + repoName)
-                .asString();
+        HttpResponse<String> response = get("https://api.github.com/repos/" + repoOwner + "/" + repoName);
 
 
-        if (response.getStatus() != 200) {
+        if (response.statusCode() != 200) {
 
             // create incidence if Status code is not 200
-            throw new Exception("Error from REST call, Response code: " + response.getStatus());
+            throw new Exception("Error from REST call, Response code: " + response.statusCode());
 
         } else {
 
             //getStatusText
-            String body = response.getBody();
+            String body = response.body();
             JSONObject obj = new JSONObject(body);
             //parse for downloads
             Boolean downloads = obj.getBoolean("has_downloads");
@@ -55,5 +54,19 @@ public class FindGitHubRepo implements JavaDelegate {
 
             }
         }
+    }
+
+    public HttpResponse<String> get(String uri) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .build();
+
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println(response.body());
+
+        return response;
     }
 }
