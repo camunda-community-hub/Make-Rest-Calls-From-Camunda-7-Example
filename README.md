@@ -2,6 +2,10 @@
 
 This document outlines an example project, and three common ways to make REST calls from Camunda Platform to external systems. Each method offers a series of pros and cons, but this document aims to provide a better understanding as to which method may be the best option for a given requirement and user.  
 
+![Video Tutorial Badge](https://img.shields.io/badge/Tutorial%20Reference%20Project-Tutorials%20for%20getting%20started%20with%20Camunda-%2338A3E1)
+<img src="https://img.shields.io/badge/Camunda%20DevRel%20Project-Created%20by%20the%20Camunda%20Developer%20Relations%20team-0Ba7B9">
+
+
  This document outlines implementation of the following:
 
 * [Java Delegates](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/)
