@@ -49,6 +49,8 @@ try {
     if(response.contentAsString.contains("Scala")){
         scala = true;
         programingLanguages = programingLanguages + " Scala "
+
+        throw new org.camunda.bpm.engine.delegate.BpmnError("error-scala-detected");
     }
     //return variables
     execution.setVariable("programingLanguages", programingLanguages)
@@ -61,4 +63,5 @@ try {
 
 } catch (RESTClientException e) {
     println(e)
+    throw new Exception(e)
 }

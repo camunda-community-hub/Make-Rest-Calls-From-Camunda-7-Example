@@ -1,6 +1,6 @@
 # Make REST calls from Camunda Example
 
-This document outlines an example project, and three common ways to make REST calls from Camunda Platform to external systems. Each method offers a series of pros and cons, but this document aims to provide a better understanding as to which method may be the best option for a given requirement and user.  
+This document outlines an example project, and four ways to make REST calls from Camunda Platform to external systems. Each method offers a series of pros and cons, but this document aims to provide a better understanding as to which method may be the best option for a given requirement and user.  
 
 ![Video Tutorial Badge](https://img.shields.io/badge/Tutorial%20Reference%20Project-Tutorials%20for%20getting%20started%20with%20Camunda-%2338A3E1)
 <img src="https://img.shields.io/badge/Camunda%20DevRel%20Project-Created%20by%20the%20Camunda%20Developer%20Relations%20team-0Ba7B9">
@@ -14,12 +14,14 @@ This document outlines an example project, and three common ways to make REST ca
   * Where the call is made by an external piece of software, running independently from the engine.
 * [Connectors](https://docs.camunda.org/manual/latest/user-guide/process-engine/connectors/)
   * Where the call is made by the engine, using properties added directly to the XML of the process model. 
+* [Script](https://docs.camunda.org/manual/latest/user-guide/process-engine/scripting/)
+  * Where the call is made by the engine, executing a script. The script can be added directly to the XML or be maintained as an external ressource.
 
-Within a process, all implementation methods can implement a BPMN [Service Task](https://docs.camunda.org/manual/latest/reference/bpmn20/tasks/service-task/). The best practice guide provides a good [overview of the different options for the implementation of service taks](https://camunda.com/best-practices/invoking-services-from-the-process/).
+Within a process, the three first implementation methods can implement a BPMN [Service Task](https://docs.camunda.org/manual/latest/reference/bpmn20/tasks/service-task/). The best practice guide provides a good [overview of the different options for the implementation of service taks](https://camunda.com/best-practices/invoking-services-from-the-process/). Script can be implemented within a [Script Task](https://docs.camunda.org/manual/latest/reference/bpmn20/tasks/script-task/).
 
-Additionally, [Task Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) and [Execution Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) can implement Java Delegates.
+Additionally, [Task Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) and [Execution Listeners](https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#execution-listener) can implement Java Delegates and Script.
 
-This project uses three Service Tasks to outline the different implementation methods. The following image outlines the process:
+This project uses three Service Tasks and one Script Task to outline the different implementation methods. The following image outlines the process:
 
 ![Process](./img/process.png)
 
@@ -54,11 +56,10 @@ Example for the Request body:
 
 ```
 
-5. Navigate to the folder of the **Javascript External Task** client and install the following packages:
+5. Navigate to the folder of the **Javascript External Task** client. Make sure you have npm installed and install the needed packages with an:
 
 ```
-npm install camunda-external-task-client-js
-npm install node-fetch
+npm update
 ```
 
 6. Run the worker.
@@ -356,3 +357,73 @@ execution.setVariable("healthPercentage",health);
 #### Complete the task
 
 With a **Connector**, the task completes after calling the REST endpoint.
+
+
+### Script Task
+
+In general Scrip can be used at various parts within the process. In the pre-packed engine Groovy is already included. JavaScript is part of the Java Runtime (SRE) until version 15. The Nashorn JavaScript Engine is removed in Java 15. 
+
+To use another scripting language that is compatible with JSR-223 the respective jar file has to be added to the classpath. 
+
+:anger: Note:
+Normally Script is not that common to make a REST call within Camunda
+
+This example uses Groovy to make the REST call. With the Script, it is possible to get variables from the process. These variables are then used to make a REST call in the Groovy script:
+
+```java
+def repoOwner = execution.getVariable("repoOwner")
+def repoName = execution.getVariable("repoName")
+
+RESTClient client = new RESTClient("https://api.github.com/")
+def path = "/repos/"+ repoOwner +"/"+ repoName +"/languages"
+def response
+
+```
+The script uses then the information from the response to set the variables true, if the response body contains a certain language: 
+```java
+
+    if(response.contentAsString.contains("Java")){
+        java = true;
+        programingLanguages = programingLanguages + " Java "
+    }
+
+```
+
+#### Create an incident
+
+Within the script an uncaught exception will create an incident in the engine. In this example we catch any exception from the RESTClient, print the exception to the console and then throw a new exception, which is not be caught and create the incident.
+
+```java
+catch (RESTClientException e) {
+    println(e)
+    throw new Exception(e)
+}    
+```
+
+
+#### Throw a BPMN error
+
+BPMN errors can be thrown based on the response from the REST call. The example script throws a BPMN error as soon as Scala is included in the response body:
+
+```java
+    if(response.contentAsString.contains("Scala")){
+        scala = true;
+        programingLanguages = programingLanguages + " Scala "
+
+        throw new org.camunda.bpm.engine.delegate.BpmnError("error-scala-detected");
+    }  
+```
+
+#### Complete the task
+
+If the try block runs successfully without the execution of the if statement for scala the task will complete and the variables are set back to the process instance.
+
+```java
+   //return variables
+    execution.setVariable("programingLanguages", programingLanguages)
+    execution.setVariable("java", java)
+    execution.setVariable("javaScript", javaScript)
+    execution.setVariable("python", python)
+    execution.setVariable("ruby", ruby)
+    execution.setVariable("closure", closure
+```
