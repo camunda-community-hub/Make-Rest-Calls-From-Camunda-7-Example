@@ -14,6 +14,12 @@
       "description": "This the use that owns the repo"
     },
     {
+      "key": "programingLanguages",
+      "label": "Programing Languages",
+      "type": "textfield",
+      "description": "Some of the coding languages found"
+    },
+    {
       "key": "forks",
       "label": "Forks",
       "type": "textfield",

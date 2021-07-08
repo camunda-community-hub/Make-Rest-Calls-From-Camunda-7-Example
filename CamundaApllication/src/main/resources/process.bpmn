@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
   <bpmn:process id="Git-Repo-Popularity-Checker" name="Git Repo Popularity Checker" isExecutable="true">
     <bpmn:startEvent id="Event_1ck1sdz" name="github repo rating started" camunda:asyncBefore="true" camunda:formKey="camunda-forms:/forms/startForm.form" camunda:initiator="processOwner">
       <bpmn:outgoing>Flow_01cw7w8</bpmn:outgoing>
@@ -14,14 +14,14 @@
         <bpmn:targetRef>DataObjectReference_11bo16b</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0827gcj" name="Search for contributors" camunda:type="external" camunda:topic="searchContributors">
+    <bpmn:serviceTask id="Activity_0827gcj" name="Search for contributors" camunda:asyncAfter="true" camunda:type="external" camunda:topic="searchContributors">
       <bpmn:incoming>Flow_01cw7w8</bpmn:incoming>
       <bpmn:outgoing>Flow_1kqscn4</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_11ehdl5">
         <bpmn:targetRef>DataObjectReference_1o7apo7</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0as6i8e" name="Get community profil" camunda:asyncBefore="true">
+    <bpmn:serviceTask id="Activity_0as6i8e" name="Get community profil">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -57,7 +57,7 @@ execution.setVariable("healthPercentage",health);
 }</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0jaaxpt</bpmn:incoming>
+      <bpmn:incoming>Flow_0xl5eun</bpmn:incoming>
       <bpmn:outgoing>Flow_0lzjxo2</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0wkjdv1">
         <bpmn:targetRef>DataObjectReference_1tkdnxi</bpmn:targetRef>
@@ -71,7 +71,7 @@ execution.setVariable("healthPercentage",health);
       <bpmn:endEvent id="Event_1ox490n">
         <bpmn:incoming>Flow_1hz42vk</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:userTask id="Activity_0hbvr03" name="Look at Error">
+      <bpmn:userTask id="Activity_0hbvr03" name="Look at Error" camunda:assignee="#{processOwner}">
         <bpmn:incoming>Flow_0qyus3u</bpmn:incoming>
         <bpmn:outgoing>Flow_1hz42vk</bpmn:outgoing>
       </bpmn:userTask>
@@ -86,7 +86,7 @@ execution.setVariable("healthPercentage",health);
     <bpmn:endEvent id="Event_1uoi4s1" name="not enough contributors">
       <bpmn:incoming>Flow_00lgwg0</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="Activity_0scbww2" name="Display Details" camunda:formKey="camunda-forms:/forms/popularRepoForm.form">
+    <bpmn:userTask id="Activity_0scbww2" name="Display Details" camunda:formKey="camunda-forms:/forms/popularRepoForm.form" camunda:assignee="#{processOwner}">
       <bpmn:incoming>Flow_0lzjxo2</bpmn:incoming>
       <bpmn:outgoing>Flow_16ph0z0</bpmn:outgoing>
     </bpmn:userTask>
@@ -104,19 +104,19 @@ execution.setVariable("healthPercentage",health);
       </bpmn:dataInputAssociation>
     </bpmn:businessRuleTask>
     <bpmn:userTask id="Activity_1vv3176" name="Display unpopular resutls" camunda:formKey="camunda-forms:/forms/unpopularRepoForm.form" camunda:assignee="#{processOwner}">
-      <bpmn:incoming>Flow_1ewrqqs</bpmn:incoming>
+      <bpmn:incoming>Flow_1qwvs2k</bpmn:incoming>
       <bpmn:outgoing>Flow_00lgwg0</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_01cw7w8" sourceRef="Event_1ck1sdz" targetRef="Activity_0827gcj" />
     <bpmn:sequenceFlow id="Flow_16ph0z0" sourceRef="Activity_0scbww2" targetRef="Event_1ixcxow" />
     <bpmn:sequenceFlow id="Flow_1kqscn4" sourceRef="Activity_0827gcj" targetRef="Activity_0yo5adu" />
     <bpmn:sequenceFlow id="Flow_1fwaiqf" sourceRef="Activity_0yo5adu" targetRef="Activity_0i6kdpa" />
-    <bpmn:sequenceFlow id="Flow_0jaaxpt" name="yes" sourceRef="Gateway_1ehn1qx" targetRef="Activity_0as6i8e">
+    <bpmn:sequenceFlow id="Flow_0jaaxpt" name="yes" sourceRef="Gateway_1ehn1qx" targetRef="Activity_0u7shp8">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{popularRepo}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0lzjxo2" sourceRef="Activity_0as6i8e" targetRef="Activity_0scbww2" />
     <bpmn:sequenceFlow id="Flow_155yowf" sourceRef="Activity_0i6kdpa" targetRef="Gateway_1ehn1qx" />
-    <bpmn:sequenceFlow id="Flow_1ewrqqs" name="no" sourceRef="Gateway_1ehn1qx" targetRef="Activity_1vv3176">
+    <bpmn:sequenceFlow id="Flow_1ewrqqs" name="no" sourceRef="Gateway_1ehn1qx" targetRef="Gateway_08z7w17">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not popularRepo}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_00lgwg0" sourceRef="Activity_1vv3176" targetRef="Event_1uoi4s1" />
@@ -126,6 +126,91 @@ execution.setVariable("healthPercentage",health);
     <bpmn:dataObject id="DataObject_01qyse4" />
     <bpmn:dataObjectReference id="DataObjectReference_1tkdnxi" name="health percentage" dataObjectRef="DataObject_0wnh2l0" />
     <bpmn:dataObject id="DataObject_0wnh2l0" />
+    <bpmn:exclusiveGateway id="Gateway_0a3kg7v" name="Include Java, Python or JavaScript?" default="Flow_02i7tmi">
+      <bpmn:incoming>Flow_0zcks3e</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xl5eun</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02i7tmi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0xl5eun" name="yes" sourceRef="Gateway_0a3kg7v" targetRef="Activity_0as6i8e">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{java or javaScript or python}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0zcks3e" sourceRef="Activity_0u7shp8" targetRef="Gateway_0a3kg7v" />
+    <bpmn:scriptTask id="Activity_0u7shp8" name="Get repo languaes" camunda:asyncAfter="true" scriptFormat="groovy">
+      <bpmn:documentation>https://docs.github.com/en/rest/reference/repos#list-repository-languages</bpmn:documentation>
+      <bpmn:incoming>Flow_0jaaxpt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zcks3e</bpmn:outgoing>
+      <bpmn:script>import wslite.rest.RESTClient
+import wslite.rest.RESTClientException
+
+def repoOwner = execution.getVariable("repoOwner")
+def repoName = execution.getVariable("repoName")
+
+def java = false
+def javaScript = false
+def python = false
+def ruby = false
+def closure = false
+def scala = false
+
+def programingLanguages
+
+
+RESTClient client = new RESTClient("https://api.github.com/")
+def path = "/repos/"+ repoOwner +"/"+ repoName +"/languages"
+def response
+
+
+
+try {
+    println(path)
+    response = client.get(path: path)
+    println(response.contentAsString)
+
+
+    if(response.contentAsString.contains("Java")){
+        java = true;
+        programingLanguages = programingLanguages + " Java "
+    }
+    if(response.contentAsString.contains("JavaScript")){
+        javaScript = true;
+        programingLanguages = programingLanguages + " JavaScript "
+    }
+    if(response.contentAsString.contains("Python")){
+        python = true;
+        programingLanguages = programingLanguages + " Python "
+    }
+    if(response.contentAsString.contains("Ruby")){
+        ruby = true;
+        programingLanguages = programingLanguages + " Ruby "
+    }
+    if(response.contentAsString.contains("Closure")){
+        closure = true;
+        programingLanguages = programingLanguages + " Closure "
+    }
+    if(response.contentAsString.contains("Scala")){
+        scala = true;
+        programingLanguages = programingLanguages + " Scala "
+    }
+    //return variables
+    execution.setVariable("programingLanguages", programingLanguages)
+    execution.setVariable("java", java)
+    execution.setVariable("javaScript", javaScript)
+    execution.setVariable("python", python)
+    execution.setVariable("ruby", ruby)
+    execution.setVariable("closure", closure)
+    execution.setVariable("scala", scala)
+
+} catch (RESTClientException e) {
+    println(e)
+}</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="Gateway_08z7w17">
+      <bpmn:incoming>Flow_1ewrqqs</bpmn:incoming>
+      <bpmn:incoming>Flow_02i7tmi</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qwvs2k</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1qwvs2k" sourceRef="Gateway_08z7w17" targetRef="Activity_1vv3176" />
+    <bpmn:sequenceFlow id="Flow_02i7tmi" name="no" sourceRef="Gateway_0a3kg7v" targetRef="Gateway_08z7w17" />
     <bpmn:textAnnotation id="TextAnnotation_1cz0l6i">
       <bpmn:text>Java Delegate</bpmn:text>
     </bpmn:textAnnotation>
@@ -138,19 +223,55 @@ execution.setVariable("healthPercentage",health);
     <bpmn:association id="Association_1wv1ai8" sourceRef="Activity_0yo5adu" targetRef="TextAnnotation_1cz0l6i" />
     <bpmn:association id="Association_0lx4x59" sourceRef="Activity_0827gcj" targetRef="TextAnnotation_0lxx03k" />
     <bpmn:association id="Association_0tiektn" sourceRef="Activity_0as6i8e" targetRef="TextAnnotation_1ech3q4" />
+    <bpmn:textAnnotation id="TextAnnotation_0ipx2c1">
+      <bpmn:text>Script Task</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1it96lf" sourceRef="Activity_0u7shp8" targetRef="TextAnnotation_0ipx2c1" />
+    <bpmn:textAnnotation id="TextAnnotation_1hm46n7">
+      <bpmn:text>get /repos/{owner}/{repo}/languages
+
+See Link in Element Documentation of Script task</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1n97y7y" sourceRef="Activity_0u7shp8" targetRef="TextAnnotation_1hm46n7" />
+    <bpmn:textAnnotation id="TextAnnotation_19i1vf9">
+      <bpmn:text>include languages in final form</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0ohhhug" sourceRef="Activity_0scbww2" targetRef="TextAnnotation_19i1vf9" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Git-Repo-Popularity-Checker">
+      <bpmndi:BPMNEdge id="Flow_02i7tmi_di" bpmnElement="Flow_02i7tmi" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <di:waypoint x="1070" y="445" />
+        <di:waypoint x="1070" y="665" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1079" y="452" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qwvs2k_di" bpmnElement="Flow_1qwvs2k">
+        <di:waypoint x="1095" y="690" />
+        <di:waypoint x="1200" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zcks3e_di" bpmnElement="Flow_0zcks3e">
+        <di:waypoint x="1000" y="420" />
+        <di:waypoint x="1045" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xl5eun_di" bpmnElement="Flow_0xl5eun" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <di:waypoint x="1095" y="420" />
+        <di:waypoint x="1200" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1162" y="393" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00lgwg0_di" bpmnElement="Flow_00lgwg0">
-        <di:waypoint x="1040" y="630" />
-        <di:waypoint x="1272" y="630" />
+        <di:waypoint x="1300" y="690" />
+        <di:waypoint x="1532" y="690" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ewrqqs_di" bpmnElement="Flow_1ewrqqs">
         <di:waypoint x="820" y="445" />
-        <di:waypoint x="820" y="630" />
-        <di:waypoint x="940" y="630" />
+        <di:waypoint x="820" y="690" />
+        <di:waypoint x="1045" y="690" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="829" y="582" width="13" height="14" />
+          <dc:Bounds x="829" y="642" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_155yowf_di" bpmnElement="Flow_155yowf">
@@ -158,14 +279,14 @@ execution.setVariable("healthPercentage",health);
         <di:waypoint x="795" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lzjxo2_di" bpmnElement="Flow_0lzjxo2">
-        <di:waypoint x="1040" y="420" />
-        <di:waypoint x="1100" y="420" />
+        <di:waypoint x="1300" y="420" />
+        <di:waypoint x="1360" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jaaxpt_di" bpmnElement="Flow_0jaaxpt">
         <di:waypoint x="845" y="420" />
-        <di:waypoint x="940" y="420" />
+        <di:waypoint x="900" y="420" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="885" y="402" width="18" height="14" />
+          <dc:Bounds x="851" y="402" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fwaiqf_di" bpmnElement="Flow_1fwaiqf">
@@ -177,8 +298,8 @@ execution.setVariable("healthPercentage",health);
         <di:waypoint x="450" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_16ph0z0_di" bpmnElement="Flow_16ph0z0">
-        <di:waypoint x="1200" y="420" />
-        <di:waypoint x="1272" y="420" />
+        <di:waypoint x="1460" y="420" />
+        <di:waypoint x="1532" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_01cw7w8_di" bpmnElement="Flow_01cw7w8">
         <di:waypoint x="218" y="420" />
@@ -191,9 +312,9 @@ execution.setVariable("healthPercentage",health);
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ixcxow_di" bpmnElement="Event_1ixcxow">
-        <dc:Bounds x="1272" y="402" width="36" height="36" />
+        <dc:Bounds x="1532" y="402" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1256" y="445" width="70" height="27" />
+          <dc:Bounds x="1516" y="445" width="70" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0yo5adu_di" bpmnElement="Activity_0yo5adu">
@@ -203,34 +324,7 @@ execution.setVariable("healthPercentage",health);
         <dc:Bounds x="290" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0as6i8e_di" bpmnElement="Activity_0as6i8e">
-        <dc:Bounds x="940" y="380" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1tkdnxi_di" bpmnElement="DataObjectReference_1tkdnxi">
-        <dc:Bounds x="1032" y="495" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1006" y="552" width="88" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1vv3176_di" bpmnElement="Activity_1vv3176">
-        <dc:Bounds x="940" y="590" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1uoi4s1_di" bpmnElement="Event_1uoi4s1">
-        <dc:Bounds x="1272" y="612" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1263" y="655" width="58" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_11bo16b_di" bpmnElement="DataObjectReference_11bo16b">
-        <dc:Bounds x="482" y="515" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="462" y="572" width="77" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1o7apo7_di" bpmnElement="DataObjectReference_1o7apo7">
-        <dc:Bounds x="322" y="585" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="311" y="642" width="58" height="27" />
-        </bpmndi:BPMNLabel>
+        <dc:Bounds x="1200" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1kavuhs_di" bpmnElement="Activity_1kavuhs" isExpanded="true">
         <dc:Bounds x="250" y="83" width="310" height="170" />
@@ -258,11 +352,50 @@ execution.setVariable("healthPercentage",health);
           <dc:Bounds x="794" y="359" width="53" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0scbww2_di" bpmnElement="Activity_0scbww2">
-        <dc:Bounds x="1100" y="380" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_1uoi4s1_di" bpmnElement="Event_1uoi4s1">
+        <dc:Bounds x="1532" y="672" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1523" y="715" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0scbww2_di" bpmnElement="Activity_0scbww2" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <dc:Bounds x="1360" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0i6kdpa_di" bpmnElement="Activity_0i6kdpa">
         <dc:Bounds x="630" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vv3176_di" bpmnElement="Activity_1vv3176">
+        <dc:Bounds x="1200" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1o7apo7_di" bpmnElement="DataObjectReference_1o7apo7">
+        <dc:Bounds x="322" y="645" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="311" y="702" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_11bo16b_di" bpmnElement="DataObjectReference_11bo16b">
+        <dc:Bounds x="482" y="515" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="462" y="632" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1tkdnxi_di" bpmnElement="DataObjectReference_1tkdnxi">
+        <dc:Bounds x="1292" y="525" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1266" y="582" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0a3kg7v_di" bpmnElement="Gateway_0a3kg7v" isMarkerVisible="true" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <dc:Bounds x="1045" y="395" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1038" y="340" width="65" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yz7jn8_di" bpmnElement="Activity_0u7shp8" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <dc:Bounds x="900" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_08z7w17_di" bpmnElement="Gateway_08z7w17" isMarkerVisible="true">
+        <dc:Bounds x="1045" y="665" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1cz0l6i_di" bpmnElement="TextAnnotation_1cz0l6i">
         <dc:Bounds x="450" y="303" width="120" height="30" />
@@ -271,8 +404,39 @@ execution.setVariable("healthPercentage",health);
         <dc:Bounds x="290" y="297" width="100" height="41" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1ech3q4_di" bpmnElement="TextAnnotation_1ech3q4">
-        <dc:Bounds x="940" y="302" width="100" height="41" />
+        <dc:Bounds x="1200" y="302" width="100" height="41" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0ipx2c1_di" bpmnElement="TextAnnotation_0ipx2c1">
+        <dc:Bounds x="920" y="290" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1hm46n7_di" bpmnElement="TextAnnotation_1hm46n7" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <dc:Bounds x="860" y="490" width="184.99892426850258" height="82" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_19i1vf9_di" bpmnElement="TextAnnotation_19i1vf9" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <dc:Bounds x="1440" y="296" width="100" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1cjpeid_di" bpmnElement="DataOutputAssociation_1cjpeid">
+        <di:waypoint x="501" y="460" />
+        <di:waypoint x="502" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_11ehdl5_di" bpmnElement="DataOutputAssociation_11ehdl5">
+        <di:waypoint x="341" y="460" />
+        <di:waypoint x="338" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0wkjdv1_di" bpmnElement="DataOutputAssociation_0wkjdv1">
+        <di:waypoint x="1267" y="460" />
+        <di:waypoint x="1298" y="525" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_0xltpxe_di" bpmnElement="DataInputAssociation_0xltpxe">
+        <di:waypoint x="358" y="670" />
+        <di:waypoint x="710" y="670" />
+        <di:waypoint x="710" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_1syf9ct_di" bpmnElement="DataInputAssociation_1syf9ct">
+        <di:waypoint x="518" y="540" />
+        <di:waypoint x="680" y="540" />
+        <di:waypoint x="680" y="460" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1wv1ai8_di" bpmnElement="Association_1wv1ai8">
         <di:waypoint x="505" y="380" />
         <di:waypoint x="510" y="337" />
@@ -282,30 +446,20 @@ execution.setVariable("healthPercentage",health);
         <di:waypoint x="344" y="338" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0tiektn_di" bpmnElement="Association_0tiektn">
-        <di:waypoint x="990" y="380" />
-        <di:waypoint x="990" y="343" />
+        <di:waypoint x="1250" y="380" />
+        <di:waypoint x="1250" y="343" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_11ehdl5_di" bpmnElement="DataOutputAssociation_11ehdl5">
-        <di:waypoint x="340" y="460" />
-        <di:waypoint x="338" y="585" />
+      <bpmndi:BPMNEdge id="Association_1it96lf_di" bpmnElement="Association_1it96lf">
+        <di:waypoint x="957" y="380" />
+        <di:waypoint x="967" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataInputAssociation_0xltpxe_di" bpmnElement="DataInputAssociation_0xltpxe">
-        <di:waypoint x="358" y="610" />
-        <di:waypoint x="710" y="610" />
-        <di:waypoint x="710" y="460" />
+      <bpmndi:BPMNEdge id="Association_1n97y7y_di" bpmnElement="Association_1n97y7y" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <di:waypoint x="950" y="460" />
+        <di:waypoint x="950" y="490" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_1cjpeid_di" bpmnElement="DataOutputAssociation_1cjpeid">
-        <di:waypoint x="501" y="460" />
-        <di:waypoint x="502" y="515" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataInputAssociation_1syf9ct_di" bpmnElement="DataInputAssociation_1syf9ct">
-        <di:waypoint x="518" y="540" />
-        <di:waypoint x="680" y="540" />
-        <di:waypoint x="680" y="460" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_0wkjdv1_di" bpmnElement="DataOutputAssociation_0wkjdv1">
-        <di:waypoint x="1013" y="460" />
-        <di:waypoint x="1034" y="495" />
+      <bpmndi:BPMNEdge id="Association_0ohhhug_di" bpmnElement="Association_0ohhhug">
+        <di:waypoint x="1439" y="380" />
+        <di:waypoint x="1461" y="350" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

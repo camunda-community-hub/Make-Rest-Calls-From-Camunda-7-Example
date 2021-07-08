@@ -19,12 +19,26 @@ public class WorkflowTest extends AbstractProcessEngineRuleTest {
   public RuntimeService runtimeService;
 
   @Test
+  public void shouldExecuteScriptTask() {
+    String processDefinitionKey = "Git-Repo-Popularity-Checker";
+
+    ProcessInstance processInstance = runtimeService.createProcessInstanceByKey(processDefinitionKey)
+            .startBeforeActivity("Activity_0u7shp8")
+            .setVariable("repoOwner", "camunda")
+            .setVariable("repoName", "camunda-bpm-platform")
+            .execute();
+
+    assertThat(processInstance).isActive();
+
+  }
+
+  @Test
   public void shouldExecuteHappyPath() {
     // given
-    String processDefinitionKey = "Make-Rest-Calls-From-Camunda-Example-process";
+   // String processDefinitionKey = "Git-Repo-Popularity-Checker";
 
     // when
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey);
+   // ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey);
 
     // then
 //    assertThat(processInstance).isStarted()
