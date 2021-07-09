@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
   <bpmn:process id="Git-Repo-Popularity-Checker" name="Git Repo Popularity Checker" isExecutable="true">
     <bpmn:startEvent id="Event_1ck1sdz" name="github repo rating started" camunda:asyncBefore="true" camunda:formKey="camunda-forms:/forms/startForm.form" camunda:initiator="processOwner">
       <bpmn:outgoing>Flow_01cw7w8</bpmn:outgoing>
@@ -190,6 +190,8 @@ try {
     if(response.contentAsString.contains("Scala")){
         scala = true;
         programingLanguages = programingLanguages + " Scala "
+
+        throw new org.camunda.bpm.engine.delegate.BpmnError("error-scala-detected");
     }
     //return variables
     execution.setVariable("programingLanguages", programingLanguages)
@@ -202,6 +204,7 @@ try {
 
 } catch (RESTClientException e) {
     println(e)
+    throw new Exception(e)
 }</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:exclusiveGateway id="Gateway_08z7w17">
@@ -227,20 +230,13 @@ try {
       <bpmn:text>Script Task</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1it96lf" sourceRef="Activity_0u7shp8" targetRef="TextAnnotation_0ipx2c1" />
-    <bpmn:textAnnotation id="TextAnnotation_1hm46n7">
-      <bpmn:text>get /repos/{owner}/{repo}/languages
-
-See Link in Element Documentation of Script task</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_1n97y7y" sourceRef="Activity_0u7shp8" targetRef="TextAnnotation_1hm46n7" />
-    <bpmn:textAnnotation id="TextAnnotation_19i1vf9">
-      <bpmn:text>include languages in final form</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_0ohhhug" sourceRef="Activity_0scbww2" targetRef="TextAnnotation_19i1vf9" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Git-Repo-Popularity-Checker">
-      <bpmndi:BPMNEdge id="Flow_02i7tmi_di" bpmnElement="Flow_02i7tmi" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+      <bpmndi:BPMNShape id="TextAnnotation_0ipx2c1_di" bpmnElement="TextAnnotation_0ipx2c1">
+        <dc:Bounds x="900" y="308" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_02i7tmi_di" bpmnElement="Flow_02i7tmi" bioc:stroke="black" bioc:fill="white">
         <di:waypoint x="1070" y="445" />
         <di:waypoint x="1070" y="665" />
         <bpmndi:BPMNLabel>
@@ -255,11 +251,11 @@ See Link in Element Documentation of Script task</bpmn:text>
         <di:waypoint x="1000" y="420" />
         <di:waypoint x="1045" y="420" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xl5eun_di" bpmnElement="Flow_0xl5eun" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+      <bpmndi:BPMNEdge id="Flow_0xl5eun_di" bpmnElement="Flow_0xl5eun" bioc:stroke="black" bioc:fill="white">
         <di:waypoint x="1095" y="420" />
         <di:waypoint x="1200" y="420" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1162" y="393" width="17" height="14" />
+          <dc:Bounds x="1162" y="393" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00lgwg0_di" bpmnElement="Flow_00lgwg0">
@@ -358,7 +354,7 @@ See Link in Element Documentation of Script task</bpmn:text>
           <dc:Bounds x="1523" y="715" width="58" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0scbww2_di" bpmnElement="Activity_0scbww2" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+      <bpmndi:BPMNShape id="Activity_0scbww2_di" bpmnElement="Activity_0scbww2" bioc:stroke="black" bioc:fill="white">
         <dc:Bounds x="1360" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0i6kdpa_di" bpmnElement="Activity_0i6kdpa">
@@ -385,13 +381,13 @@ See Link in Element Documentation of Script task</bpmn:text>
           <dc:Bounds x="1266" y="582" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0a3kg7v_di" bpmnElement="Gateway_0a3kg7v" isMarkerVisible="true" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+      <bpmndi:BPMNShape id="Gateway_0a3kg7v_di" bpmnElement="Gateway_0a3kg7v" isMarkerVisible="true" bioc:stroke="black" bioc:fill="white">
         <dc:Bounds x="1045" y="395" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1038" y="340" width="65" height="40" />
+          <dc:Bounds x="1038" y="340" width="66" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1yz7jn8_di" bpmnElement="Activity_0u7shp8" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+      <bpmndi:BPMNShape id="Activity_1yz7jn8_di" bpmnElement="Activity_0u7shp8" bioc:stroke="black" bioc:fill="white">
         <dc:Bounds x="900" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_08z7w17_di" bpmnElement="Gateway_08z7w17" isMarkerVisible="true">
@@ -406,15 +402,10 @@ See Link in Element Documentation of Script task</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_1ech3q4_di" bpmnElement="TextAnnotation_1ech3q4">
         <dc:Bounds x="1200" y="302" width="100" height="41" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0ipx2c1_di" bpmnElement="TextAnnotation_0ipx2c1">
-        <dc:Bounds x="920" y="290" width="100" height="30" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1hm46n7_di" bpmnElement="TextAnnotation_1hm46n7" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
-        <dc:Bounds x="860" y="490" width="184.99892426850258" height="82" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_19i1vf9_di" bpmnElement="TextAnnotation_19i1vf9" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
-        <dc:Bounds x="1440" y="296" width="100" height="54" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1it96lf_di" bpmnElement="Association_1it96lf">
+        <di:waypoint x="950" y="380" />
+        <di:waypoint x="950" y="338" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_1cjpeid_di" bpmnElement="DataOutputAssociation_1cjpeid">
         <di:waypoint x="501" y="460" />
         <di:waypoint x="502" y="515" />
@@ -448,18 +439,6 @@ See Link in Element Documentation of Script task</bpmn:text>
       <bpmndi:BPMNEdge id="Association_0tiektn_di" bpmnElement="Association_0tiektn">
         <di:waypoint x="1250" y="380" />
         <di:waypoint x="1250" y="343" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1it96lf_di" bpmnElement="Association_1it96lf">
-        <di:waypoint x="957" y="380" />
-        <di:waypoint x="967" y="320" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1n97y7y_di" bpmnElement="Association_1n97y7y" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
-        <di:waypoint x="950" y="460" />
-        <di:waypoint x="950" y="490" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_0ohhhug_di" bpmnElement="Association_0ohhhug">
-        <di:waypoint x="1439" y="380" />
-        <di:waypoint x="1461" y="350" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
