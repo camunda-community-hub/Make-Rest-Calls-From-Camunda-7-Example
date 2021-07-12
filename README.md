@@ -25,7 +25,7 @@ This project uses three Service Tasks and one Script Task to outline the differe
 
 ![Process](./img/process.png)
 
-:exclamation: Important:
+:exclamation: **Important:**  
 If a REST call returns a `2xx` status code, this indicates a successful call. However, it should not be assumed other codes such as `5xx` or `4xx` will automatically lead to an error within the process. Instead, this can be implemented and handled depending on the requirements for each project. For more information, read the [explanation of the implementations](#explanation-of-the-implementations) section below.
 
 ## Run the project
@@ -84,7 +84,7 @@ No matter how you implement the call, there three main options as to how a Servi
 
 A **Java Delegate** is called during the execution, and must implement the **JavaDelegate** interface. In this example, the Java Class is deployed to the Camunda Engine.
 
-:file_folder: Note:
+:file_folder: **Note:**  
 The explanation divides the code into different pieces to outline the different concepts. The full class can be found within [this project](Make-Rest-Calls-From-Camunda-Example/CamundaApllication/src/main/java/com/example/workflow/FindGitHubRepo.java).
 
 The first part of the class gets the process variables `repoOwner` and `repoName`. These variables are used to perform the REST call within the Java code:
@@ -137,7 +137,8 @@ The code example then checks the status code. If the response code is not `200`,
 
 ```
 
-:anger: Ensure you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending on where your last transaction in the process is, the state of the process will roll back to the last transaction. Note that this may not be the service task where the error occurred. You can set transactions manually by using the **async before and after** flag in the modeler.
+:exclamation: **Important:**   
+Ensure you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending on where your last transaction in the process is, the state of the process will roll back to the last transaction. Note that this may not be the service task where the error occurred. You can set transactions manually by using the **async before and after** flag in the modeler.
 
 ![Process](./img/async.png)
 
@@ -182,8 +183,8 @@ If the two prior checks do not trigger the exception or the BPMN error, the exam
 
 An external task is written into a list. Next, an external task worker fetches and locks it using Camunda's REST API, and the external task workers deploy independently and are therefore language independent. There is a [list with available clients in different languages](https://github.com/camunda/awesome-camunda-external-clients) you may refer to. This project uses the JavaScript external task client.
 
-:file_folder:
-Note: The explanation divides the code into different pieces to outline the different concepts. The full code example can be found within [this project](Make-Rest-Calls-From-Camunda-Example/SearchContributorService/service.js).
+:file_folder: **Note:**  
+ The explanation divides the code into different pieces to outline the different concepts. The full code example can be found within [this project](Make-Rest-Calls-From-Camunda-Example/SearchContributorService/service.js).
 
 With the External Task client, it is possible to get variables from the process. These variables are then used to make a REST call in Javascript code:
 
@@ -262,7 +263,7 @@ The two previous examples implemented the REST call within their code. Beneficia
 
 **Connectors** within Camunda provide an API for simple HTTP and SOAP connections; there is no need to implement the REST call with code. However, handling the different outcomes is more complicated and requires Script.
 
-:anger: Note:
+:exclamation: **Important:**  
 Be aware of the other two options. Depending on how complicated the REST call and the proceeding of the response becomes, the other options above may be more suitable.
 
 To use **Connectors** and the http client, the connect dependency and the http client must be added to the POM file:
@@ -321,7 +322,8 @@ ${S(response).prop("health_percentage")}
 
 Similar to the examples above, the **Connector** should create an incident if the response code is not `200`.
 
-:anger: Ensure you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending on where your last transaction in the process is, the state of the process will roll back to the last transaction, which might not be the service task where the error occurred. You can set transactions manually by using the **sync before and after** flag in the modeler.
+:exclamation: **Important:**  
+Ensure you understand [transactions](https://docs.camunda.org/manual/latest/user-guide/process-engine/transactions-in-processes/) within the Camunda workflow engine. Depending on where your last transaction in the process is, the state of the process will roll back to the last transaction, which might not be the service task where the error occurred. You can set transactions manually by using the **sync before and after** flag in the modeler.
 
 ![Async](./img/async.png)
 
@@ -333,7 +335,7 @@ The response code is defined as an output variable. To check the value of the va
 
 If the response code does not equal `200`, the Script throws an error. As the error is not handled, this leads to an incident within the workflow engine.
 
-:bangbang:
+:bangbang: **cases to consider:**
 In this project, the incident will be created before. If the response is not `200`, the response body will look different. Therefore, the Expression we use to store the health percentage ```${S(response).prop("health_percentage")}``` fails. The accompanying incident message won't give details about the failed REST call. Rather, it shares that the evaluation of the expression has failed. This outlines one of the challenges working with **Connectors**. If the evaluation of the response code and the different variables is handled within the same code, it is easier to maintain the outcome and the logic.
 
 
@@ -365,7 +367,7 @@ In general Scrip can be used at various parts within the process. In the pre-pac
 
 To use another scripting language that is compatible with JSR-223 the respective jar file has to be added to the classpath. 
 
-:anger: Note:
+:exclamation: **Important:**  
 Normally Script is not that common to make a REST call within Camunda
 
 This example uses Groovy to make the REST call. With the Script, it is possible to get variables from the process. These variables are then used to make a REST call in the Groovy script:
