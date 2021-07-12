@@ -363,7 +363,18 @@ With a **Connector**, the task completes after calling the REST endpoint.
 
 ### Script Task
 
-In general Scrip can be used at various parts within the process. In the pre-packed engine Groovy is already included. JavaScript is part of the Java Runtime (SRE) until version 15. The Nashorn JavaScript Engine is removed in Java 15. 
+Scriping can be used in a variety of places within the process, including dedicated script tasks. In some distributions of Camunda the groovy engine is already included. For spring boot it needs to be added as a dependency.
+
+```XML
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>3.0.8</version>
+      <type>pom</type>
+    </dependency>
+```
+
+JavaScript is part of the Java Runtime (SRE) until version 15. The Nashorn JavaScript Engine is removed in Java 15. 
 
 To use another scripting language that is compatible with JSR-223 the respective jar file has to be added to the classpath. 
 
