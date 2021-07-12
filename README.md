@@ -335,7 +335,7 @@ The response code is defined as an output variable. To check the value of the va
 
 If the response code does not equal `200`, the Script throws an error. As the error is not handled, this leads to an incident within the workflow engine.
 
-:bangbang: **cases to consider:**
+:bangbang: **cases to consider:**  
 In this project, the incident will be created before. If the response is not `200`, the response body will look different. Therefore, the Expression we use to store the health percentage ```${S(response).prop("health_percentage")}``` fails. The accompanying incident message won't give details about the failed REST call. Rather, it shares that the evaluation of the expression has failed. This outlines one of the challenges working with **Connectors**. If the evaluation of the response code and the different variables is handled within the same code, it is easier to maintain the outcome and the logic.
 
 
