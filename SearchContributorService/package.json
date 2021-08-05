@@ -1,0 +1,16 @@
+{
+  "name": "searchcontributorservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "camunda-external-task-client-js": "^2.1.0",
+    "node-fetch": "^2.6.1"
+  }
+}
