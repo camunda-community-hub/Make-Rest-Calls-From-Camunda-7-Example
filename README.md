@@ -283,7 +283,7 @@ To use **Connectors** and the http client, the connect dependency and the http c
 To parse the response body, it may be helpful to include the [Spin Plugin](https://docs.camunda.org/manual/latest/reference/spin/) as well. To add Spin and JSON, add the dependencies to the POM file.
 
 ```xml
-  <dependency>
+    <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine-plugin-spin</artifactId>
     </dependency>
@@ -360,10 +360,26 @@ execution.setVariable("healthPercentage",health);
 
 With a **Connector**, the task completes after calling the REST endpoint.
 
+#### Logging Connectors
+
+To get more output about the traffic with the called service, you can use these logging configuration in the `application.yaml` file:
+
+```yaml
+logging:
+  level:
+    '[org.camunda.bpm.connect]': DEBUG
+    '[org.apache.http.headers]': DEBUG
+    '[org.apache.http.wire]': DEBUG
+    '[connectjar.org.apache.http.headers]': DEBUG
+    '[connectjar.org.apache.http.wire]': DEBUG 
+```
+
+The levels are preconfigured to `INFO` in the `application.yaml` of this project.
+
 
 ### Script Task
 
-Scriping can be used in a variety of places within the process, including dedicated script tasks. In some distributions of Camunda the groovy engine is already included. For spring boot it needs to be added as a dependency.
+Scripting can be used in a variety of places within the process, including dedicated script tasks. In some distributions of Camunda the groovy engine is already included. For spring boot it needs to be added as a dependency.
 
 ```XML
     <dependency>
