@@ -3,3 +3,9 @@ spring.datasource.url: jdbc:h2:file:./camunda-h2-database
 camunda.bpm.admin-user:
   id: demo
   password: demo
+  
+logging:  level:    '[org.camunda.bpm.connect]': DEBUG
+    '[org.apache.http.headers]': DEBUG
+    '[org.apache.http.wire]': DEBUG
+    '[connectjar.org.apache.http.headers]': DEBUG
+    '[connectjar.org.apache.http.wire]': DEBUG 
