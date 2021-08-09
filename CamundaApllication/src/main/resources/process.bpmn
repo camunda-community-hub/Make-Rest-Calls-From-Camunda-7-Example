@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
   <bpmn:process id="Git-Repo-Popularity-Checker" name="Git Repo Popularity Checker" isExecutable="true">
     <bpmn:startEvent id="Event_1ck1sdz" name="github repo rating started" camunda:asyncBefore="true" camunda:formKey="camunda-forms:/forms/startForm.form" camunda:initiator="processOwner">
       <bpmn:outgoing>Flow_01cw7w8</bpmn:outgoing>
@@ -32,7 +32,7 @@
               </camunda:map>
             </camunda:inputParameter>
             <camunda:inputParameter name="url">https://api.github.com/repos/#{repoOwner}/#{repoName}/community/profile</camunda:inputParameter>
-            <camunda:outputParameter name="healthPercentage">${S(response).prop("health_percentage")}</camunda:outputParameter>
+            <camunda:outputParameter name="healthPercentage">${S(response).prop("health_percentage").numberValue()}</camunda:outputParameter>
             <camunda:outputParameter name="statusCode">#{statusCode}</camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -66,7 +66,7 @@ execution.setVariable("healthPercentage",health);
     <bpmn:subProcess id="Activity_1kavuhs" triggeredByEvent="true">
       <bpmn:startEvent id="Event_024h07w">
         <bpmn:outgoing>Flow_0qyus3u</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="ErrorEventDefinition_0iuyzzm" />
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0iuyzzm" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
       </bpmn:startEvent>
       <bpmn:endEvent id="Event_1ox490n">
         <bpmn:incoming>Flow_1hz42vk</bpmn:incoming>
@@ -233,9 +233,6 @@ try {
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Git-Repo-Popularity-Checker">
-      <bpmndi:BPMNShape id="TextAnnotation_0ipx2c1_di" bpmnElement="TextAnnotation_0ipx2c1">
-        <dc:Bounds x="900" y="308" width="100" height="30" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_02i7tmi_di" bpmnElement="Flow_02i7tmi" bioc:stroke="black" bioc:fill="white">
         <di:waypoint x="1070" y="445" />
         <di:waypoint x="1070" y="665" />
@@ -402,10 +399,9 @@ try {
       <bpmndi:BPMNShape id="TextAnnotation_1ech3q4_di" bpmnElement="TextAnnotation_1ech3q4">
         <dc:Bounds x="1200" y="302" width="100" height="41" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1it96lf_di" bpmnElement="Association_1it96lf">
-        <di:waypoint x="950" y="380" />
-        <di:waypoint x="950" y="338" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0ipx2c1_di" bpmnElement="TextAnnotation_0ipx2c1">
+        <dc:Bounds x="900" y="308" width="100" height="30" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="DataOutputAssociation_1cjpeid_di" bpmnElement="DataOutputAssociation_1cjpeid">
         <di:waypoint x="501" y="460" />
         <di:waypoint x="502" y="515" />
@@ -439,6 +435,10 @@ try {
       <bpmndi:BPMNEdge id="Association_0tiektn_di" bpmnElement="Association_0tiektn">
         <di:waypoint x="1250" y="380" />
         <di:waypoint x="1250" y="343" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1it96lf_di" bpmnElement="Association_1it96lf">
+        <di:waypoint x="950" y="380" />
+        <di:waypoint x="950" y="338" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
