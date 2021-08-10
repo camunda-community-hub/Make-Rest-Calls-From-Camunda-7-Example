@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0vjalzh" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="WireMockProcess" name="Wiremock Process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Wire Mock calls wanted" camunda:formKey="embedded:/forms/wireMockStartForm.html">
+      <bpmn:outgoing>Flow_0bn5e6g</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0bn5e6g" sourceRef="StartEvent_1" targetRef="Activity_0ng6osj" />
+    <bpmn:serviceTask id="Activity_0ng6osj" name="Call via External Task" camunda:type="external" camunda:topic="wireMockCall">
+      <bpmn:incoming>Flow_0bn5e6g</bpmn:incoming>
+      <bpmn:outgoing>Flow_13p05az</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13p05az" sourceRef="Activity_0ng6osj" targetRef="Activity_0dwqdrh" />
+    <bpmn:sequenceFlow id="Flow_0dhj5lr" sourceRef="Activity_0dwqdrh" targetRef="Activity_129bhyv" />
+    <bpmn:sequenceFlow id="Flow_19eb9xn" sourceRef="Activity_129bhyv" targetRef="Activity_071zgbu" />
+    <bpmn:endEvent id="Event_1fqwhrk" name="Rest calls completed">
+      <bpmn:incoming>Flow_0gmun7n</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0gmun7n" sourceRef="Activity_071zgbu" targetRef="Event_1fqwhrk" />
+    <bpmn:serviceTask id="Activity_0dwqdrh" name="Call via JavaDelegate" camunda:asyncBefore="true" camunda:delegateExpression="${wireMockDelegate}">
+      <bpmn:incoming>Flow_13p05az</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dhj5lr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_071zgbu" name="Call via HTTPConnector" camunda:asyncBefore="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">${wireMockUrl}</camunda:inputParameter>
+            <camunda:outputParameter name="statusCode">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">if(statusCode != 200){
+throw new Error("Error from REST, response Code: " + statusCode)
+}else{
+
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19eb9xn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gmun7n</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="Activity_129bhyv" name="Call via Script" camunda:asyncBefore="true" scriptFormat="groovy">
+      <bpmn:incoming>Flow_0dhj5lr</bpmn:incoming>
+      <bpmn:outgoing>Flow_19eb9xn</bpmn:outgoing>
+      <bpmn:script>import wslite.rest.RESTClient
+import wslite.rest.RESTClientException
+
+def wireMockUrl = execution.getVariable("wireMockUrl")
+
+RESTClient client = new RESTClient(wireMockUrl)
+
+try {
+    println(wireMockUrl)
+    response = client.get()
+    println(response.contentAsString)
+
+} catch (RESTClientException e) {
+    println(e)
+    throw new Exception(e)
+}</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:subProcess id="Activity_0awe1wj" triggeredByEvent="true">
+      <bpmn:endEvent id="Event_0en2bhg">
+        <bpmn:incoming>Flow_11bfd7z</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:userTask id="Activity_1xk3o0z" name="Look at Error" camunda:assignee="#{processOwner}">
+        <bpmn:incoming>Flow_19k751n</bpmn:incoming>
+        <bpmn:outgoing>Flow_11bfd7z</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_19k751n" sourceRef="Event_1kj3ge6" targetRef="Activity_1xk3o0z" />
+      <bpmn:sequenceFlow id="Flow_11bfd7z" sourceRef="Activity_1xk3o0z" targetRef="Event_0en2bhg" />
+      <bpmn:startEvent id="Event_1kj3ge6">
+        <bpmn:outgoing>Flow_19k751n</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_1qo0rnx" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="WireMockProcess">
+      <bpmndi:BPMNEdge id="Flow_0gmun7n_di" bpmnElement="Flow_0gmun7n">
+        <di:waypoint x="850" y="117" />
+        <di:waypoint x="912" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19eb9xn_di" bpmnElement="Flow_19eb9xn">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="750" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dhj5lr_di" bpmnElement="Flow_0dhj5lr">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13p05az_di" bpmnElement="Flow_13p05az">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bn5e6g_di" bpmnElement="Flow_0bn5e6g">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="142" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05bviel_di" bpmnElement="Activity_0ng6osj">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fqwhrk_di" bpmnElement="Event_1fqwhrk">
+        <dc:Bounds x="912" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="905" y="142" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1t77u9a_di" bpmnElement="Activity_0dwqdrh">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mi84wn_di" bpmnElement="Activity_071zgbu">
+        <dc:Bounds x="750" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cutq6u_di" bpmnElement="Activity_129bhyv">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0awe1wj_di" bpmnElement="Activity_0awe1wj" isExpanded="true">
+        <dc:Bounds x="250" y="210" width="310" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_11bfd7z_di" bpmnElement="Flow_11bfd7z">
+        <di:waypoint x="460" y="300" />
+        <di:waypoint x="502" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19k751n_di" bpmnElement="Flow_19k751n">
+        <di:waypoint x="306" y="300" />
+        <di:waypoint x="360" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0en2bhg_di" bpmnElement="Event_0en2bhg">
+        <dc:Bounds x="502" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xk3o0z_di" bpmnElement="Activity_1xk3o0z">
+        <dc:Bounds x="360" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tjtlgs_di" bpmnElement="Event_1kj3ge6">
+        <dc:Bounds x="270" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
