@@ -10,4 +10,12 @@ logging:
     '[org.apache.http.headers]': DEBUG
     '[org.apache.http.wire]': DEBUG
     '[connectjar.org.apache.http.headers]': DEBUG
-    '[connectjar.org.apache.http.wire]': DEBUG 
+    '[connectjar.org.apache.http.wire]': DEBUG
+    
+camunda:
+  bpm:
+    generic-properties:
+      properties:
+        deployChangedOnly: true
+
+    default-number-of-retries: 1
