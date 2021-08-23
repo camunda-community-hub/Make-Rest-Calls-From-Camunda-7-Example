@@ -21,6 +21,12 @@ public class WiremockServer {
             .withHeader("Content-Type", "application/json")
             .withBody("{ \"message\": \"this is 10 seconds late\" }")));
     
+    wireMockServer.stubFor(get(urlEqualTo("/long/delay"))
+        .willReturn(aResponse()
+            .withFixedDelay(600000)
+            .withHeader("Content-Type", "application/json")
+            .withBody("{ \"message\": \"You have been patient. This was 10 Minute delay\" }")));
+    
     wireMockServer.stubFor(get(urlEqualTo("/does/not/exist")).willReturn(notFound()));
     
     wireMockServer.stubFor(get(urlEqualTo("/server/breakdown"))
