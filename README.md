@@ -1,6 +1,6 @@
-# Make REST calls from Camunda Example
+# Make REST calls from Camunda Platform 7 Example
 
-This document outlines an example project, and four ways to make REST calls from Camunda Platform to external systems. Each method offers a series of pros and cons, but this document aims to provide a better understanding as to which method may be the best option for a given requirement and user.  
+This document outlines an example project, and four ways to make REST calls from Camunda Platform 7 to external systems. Each method offers a series of pros and cons, but this document aims to provide a better understanding as to which method may be the best option for a given requirement and user.  
 
 ![Video Tutorial Badge](https://img.shields.io/badge/Tutorial%20Reference%20Project-Tutorials%20for%20getting%20started%20with%20Camunda-%2338A3E1)
 <img src="https://img.shields.io/badge/Camunda%20DevRel%20Project-Created%20by%20the%20Camunda%20Developer%20Relations%20team-0Ba7B9">
