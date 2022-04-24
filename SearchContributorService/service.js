@@ -16,48 +16,76 @@ client.subscribe("searchContributors", async function({ task, taskService }) {
     const repoName = task.variables.get("repoName");
     const repoOwner = task.variables.get("repoOwner");
   
-const url = "https://api.github.com/repos/"+ repoOwner +"/" + repoName + "/contributors"
-console.log(url)
+    const url = "https://api.github.com/repos/"+ repoOwner +"/" + repoName + "/contributors"
+    console.log(url)
 
-try{
-const contributors = await fetch(url)
-.then(function(response) {    
-    if (!response.ok) {
-       // throw Execption; 
-       var e = new Error("HTTP status " + response.status); // e.name is 'Error'
-       e.name = 'RestError';
-       throw e; 
+    try{
+        const contributors = await fetch(url)
+            .then(function(response) {
+                if (!response.ok) {
+                    // throw Execption; 
+                    var e = new Error("HTTP status " + response.status); // e.name is 'Error'
+                    e.name = 'RestError';
+                    throw e; 
+                }
+                return response.json();
+            })
+
+        var numberContributors = Object.keys(contributors).length;
+        console.log(numberContributors);
+
+        //Throw BPMN error
+        if(numberContributors <= 1){
+            const processVariables = new Variables();
+            processVariables.set("errorMessage", "Sorry the repo has just one or none contributor, look for another one");
+            await taskService.handleBpmnError(task, "NO_CONTRIBUTORS", "The repo has no contributors", processVariables);
+        }
+
+        //Complete Task
+        const processVariables = new Variables();
+        processVariables.set("contributors", numberContributors);
+        await taskService.complete(task, processVariables)
+
+        // Handel Execption and create an incidence in Workflow Engine
+    } catch (e){
+        console.log(e);
+        await taskService.handleFailure(task, {
+            errorMessage: e.name,
+            errorDetails: e.message,
+            retries: 0,
+            retryTimeout: 1000
+        });
+
     }
-    return response.json();
-})
-
-var numberContributors = Object.keys(contributors).length;
-
-//Throw BPMN error
-if(numberContributors <= 1){
-    const processVariables = new Variables();
-    processVariables.set("errorMessage", "Sorry the repo has just one or none contributor, look for another one");
-    await taskService.handleBpmnError(task, "NO_CONTRIBUTORS", "The repo has no contributors", processVariables);
-}
-
-//Complete Task
-const processVariables = new Variables();
-processVariables.set("contributors", numberContributors);
-await taskService.complete(task, processVariables)
-
-// Handel Execption and create an incidence in Workflow Engine
-}catch (e){
-    await taskService.handleFailure(task, {
-        errorMessage: e.name,
-        errorDetails: e.message,
-        retries: 0,
-        retryTimeout: 1000
-      });
-
-}
 });
 
-
+client.subscribe("wireMockCall", async function({ task, taskService }) {
+    const wireMockUrl = task.variables.get("wireMockUrl");
+    console.log(wireMockUrl);
+    
+    try{
+        const mockResonse = await fetch(wireMockUrl)
+            .then(function(response) { 
+                if (!response.ok) {
+                    // throw Execption; 
+                    var e = new Error("HTTP status " + response.status); // e.name is 'Error'
+                    e.name = 'RestError';
+                    throw e; 
+                }
+                return response.json();
+            })
+        console.log("complete");
+        await taskService.complete(task);
+    } catch(e) {
+        console.log(e);
+        await taskService.handleFailure(task, {
+            errorMessage: e.name,
+            errorDetails: e.message,
+            retries: 0,
+            retryTimeout: 1000
+        });
+    }
+});    
 
 
 

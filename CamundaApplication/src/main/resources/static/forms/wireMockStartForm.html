@@ -1,0 +1,32 @@
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="control-label col-md-4">Mocked Url</label>
+    <div class="col-md-8">
+      <select
+             cam-variable-name="wireMockUrl"
+             cam-variable-type="String"
+             required
+             class="form-control">
+        <option value="http://localhost:8089/some/thing">ok</option>
+        <option value="http://localhost:8089/delay">delay</option>
+        <option value="http://localhost:8089/long/delay">long delay</option>
+        <option value="http://localhost:8089/does/not/exist">404</option>
+        <option value="http://localhost:8089/server/breakdown">breakdown</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-4">Key</label>
+    <div class="col-md-8">
+      <input type="text"
+             cam-business-key=""
+             required
+             class="form-control" />
+    </div>
+  </div>
+
+  <script cam-script type="text/form-script">
+    // custom JavaScript goes here
+  </script>
+</form>
